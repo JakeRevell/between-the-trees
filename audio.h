@@ -1,5 +1,14 @@
 /*
  * Definition of AudioSample class
+ *
+ * This is just a basic wrapper for an allegro sample
+ * 
+ * currently added a basic loading function, but possibly could be
+ * added as a resource to be loaded by the resource loader?
+ *
+ * Also, we might need some sort of orchestrator for the audio samples,
+ * could be implemented in the game class or somewhere else if necessary?
+ *
 */
 
 #ifndef AUDIO_H_INCLUDED
