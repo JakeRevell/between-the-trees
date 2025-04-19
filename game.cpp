@@ -95,6 +95,12 @@ void Game::set_text(string str, string name)
     dialogueBox->set_text(str, name);
 }
 
+void Game::set_bg_music(AudioSample* audio_ptr)
+{
+  audio_ptr->playbackMode = ALLEGRO_PLAYMODE_LOOP;
+  audio_ptr->play();
+}
+
 void Game::set_flag(int flag, bool val)
 {
     int check = pow(2, flag);

@@ -9,9 +9,13 @@ int main()
     al_init();
     al_install_keyboard();
     al_install_mouse();
+    al_install_audio();
     al_init_primitives_addon();
     al_init_image_addon();
     al_init_font_addon();
+    al_init_acodec_addon();
+    al_reserve_samples(16);
+
     
     al_set_new_display_flags(ALLEGRO_OPENGL | ALLEGRO_RESIZABLE);
     al_set_new_display_option(ALLEGRO_VSYNC, 2, ALLEGRO_REQUIRE);

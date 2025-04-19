@@ -8,10 +8,13 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "window.h"
 #include "resource.h"
 #include "scene.h"
 #include "dialogue.h"
+#include "audio.h"
 
 class Game {
     public:
@@ -25,6 +28,7 @@ class Game {
         Dialogue& get_dialogue_box() const;
         void set_text(string);
         void set_text(string, string);
+        void set_bg_music(AudioSample*);
         void set_flag(int, bool);
         bool get_flag(int) const;
         void set_mouse_coords(int, int);

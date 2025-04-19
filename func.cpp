@@ -9,6 +9,9 @@ using namespace std;
 void scene0(void* gm_ptr)
 {
     Game& game = *(Game*)gm_ptr;
+    AudioSample* bg_music = new AudioSample();
+    bg_music->load("music.opus");
+    game.set_bg_music(bg_music);
     game.set_text("Hello world!", "Name");
     game.set_text("This is a test message.");
     game.set_text("...");
