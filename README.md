@@ -1,8 +1,6 @@
-## Breaking News: It Does Something Now
-That's right, folks. We now have a few placeholder textures and a very simple dialogue test scene!
-It may not do much, but at least it works!
+## Breaking News: Now with sound!
+I have added basic support for audio! Now you can set the background music.
 
-...Or at least, it does on my computer.
 
 ## Compiling (for Linux)
 - Make sure you have gcc, make, and allegro installed
