@@ -70,6 +70,7 @@ int& Dialogue::get_state()
 void Dialogue::set_text(string str)
 {
     cout << this << ": Setting text to " << str << endl;
+    str = insert_newlines(str);
     text.push_back(str);
     if (state == 0)
         state = 1;
@@ -77,6 +78,7 @@ void Dialogue::set_text(string str)
 void Dialogue::set_text(string str, string nm)
 {
     cout << this << ": Setting text to " << str << endl;
+    str = insert_newlines(str);
     text.push_back(str);
     if (nm != "")
     {
@@ -88,6 +90,46 @@ void Dialogue::set_text(string str, string nm)
         showName = false;
     }
 }
+
+string Dialogue::insert_newlines(string str) 
+{
+  vector<int> positions = {-1};
+  int end_sub = 0;
+  int i = 0;
+  while (end_sub != -1) {
+    end_sub = str.find("\n", positions.back() + 1);
+    if (end_sub == -1)
+      positions.push_back(str.length());
+    else {
+      positions.push_back(end_sub);
+      i++;
+    }
+  }
+
+  i = 0;
+  while (i < (positions.size() - 1))
+  {
+    int start = positions[i] + 1;
+    int end = positions[i + 1];
+    int index;
+    if ((end - start) > 60)
+    {
+      index = str.substr(start, start + 60).rfind(" ");
+      index += start;
+      str.insert(index + 1, "\n");
+      positions[i] = index + 2;
+      for (int j = i + 1; j < positions.size(); j++) {
+        positions[j]++;
+      }
+    }
+    else
+    {
+      i++;
+    }
+  }
+  return str;
+}
+
 vector<string>& Dialogue::get_text()
 {
     return text;

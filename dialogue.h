@@ -33,6 +33,7 @@ class Dialogue
         clock_t dialogueStartTime;
     
     private:
+        string insert_newlines(string);
         int state; //0 - hidden; 1 - currently drawing text, char by char; 2 - text fully drawn, ready for next line
         vector<string> text;
         int currentLine;
