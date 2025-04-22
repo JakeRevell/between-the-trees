@@ -15,6 +15,7 @@
 #define AUDIO_H_INCLUDED
 
 #include <string>
+#include <unordered_map>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -33,6 +34,15 @@ class AudioSample {
     ALLEGRO_PLAYMODE playbackMode;
   private:
     ALLEGRO_SAMPLE* sample;
+};
+
+class AudioManager {
+  public:
+    bool load_sample(string, string);
+    AudioSample* get_sample(string);
+    bool set_bg_music(string);
+  private:
+    unordered_map<string, AudioSample> loaded_samples;
 };
 
 #endif

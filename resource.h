@@ -15,11 +15,12 @@
 
 #include <allegro5/allegro_font.h>
 #include "scene.h"
+#include "audio.h"
 
 class ResourceLoader
 {
     public:
-        ResourceLoader();
+        ResourceLoader(AudioManager*);
         ~ResourceLoader();
         void load(int, void*);
         ALLEGRO_FONT* get_font() const;
@@ -37,6 +38,7 @@ class ResourceLoader
         int numBackgrounds;
         Scene** loadedScenes;
         int numScenes;
+        AudioManager* audioManager;
 };
 
 #endif

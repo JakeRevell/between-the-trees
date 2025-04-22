@@ -28,7 +28,7 @@ class Game {
         Dialogue& get_dialogue_box() const;
         void set_text(string);
         void set_text(string, string);
-        void set_bg_music(AudioSample*);
+        void set_bg_music(string);
         void set_flag(int, bool);
         bool get_flag(int) const;
         void set_mouse_coords(int, int);
@@ -39,6 +39,7 @@ class Game {
     private:
         Window* window;
         ResourceLoader* data;
+        AudioManager* audioManager;
         Dialogue* dialogueBox;
         Scene** scenes;
         ALLEGRO_THREAD* eventThread;

@@ -12,7 +12,9 @@ Game::Game(void* (*event_proc)(ALLEGRO_THREAD*, void*), void* (*drawing_proc)(AL
     window->set_title("Between the Trees");
     window->clear();
     
-    data = new ResourceLoader();
+    audioManager = new AudioManager();
+
+    data = new ResourceLoader(audioManager);
     data->load(0, this);
     
     dialogueBox = new Dialogue(data);
@@ -50,6 +52,7 @@ Game::~Game()
     delete data;
     delete window;
     delete dialogueBox;
+    delete audioManager;
 }
 
 Window* Game::get_window()
@@ -95,10 +98,9 @@ void Game::set_text(string str, string name)
     dialogueBox->set_text(str, name);
 }
 
-void Game::set_bg_music(AudioSample* audio_ptr)
+void Game::set_bg_music(string name)
 {
-  audio_ptr->playbackMode = ALLEGRO_PLAYMODE_LOOP;
-  audio_ptr->play();
+  audioManager->set_bg_music(name);
 }
 
 void Game::set_flag(int flag, bool val)

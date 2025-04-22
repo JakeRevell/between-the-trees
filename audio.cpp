@@ -1,3 +1,4 @@
+// Implementation if the AudioSample class
 #include "audio.h"
 
 using namespace std;
@@ -26,4 +27,29 @@ bool AudioSample::load(string filePath) {
   if (sample == NULL)
     return false;
   return true;
+}
+
+bool AudioManager::load_sample(string name, string filePath) {
+  AudioSample* sample = new AudioSample();
+  bool success = sample->load(filePath);
+  if (!success)
+    return false;
+  loaded_samples[name] = *sample;
+  return true;
+}
+
+AudioSample* AudioManager::get_sample(string name) {
+  auto search = loaded_samples.find(name);
+  if (search != loaded_samples.end());
+    return &loaded_samples[name];
+  return NULL;
+}
+
+bool AudioManager::set_bg_music(string name) {
+  AudioSample* sample = get_sample(name);
+  if (sample != NULL)
+    sample->playbackMode = ALLEGRO_PLAYMODE_LOOP;
+    sample->play();
+    return true;
+  return false;
 }
