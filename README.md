@@ -25,6 +25,7 @@
 ### Other Changes
 - Renamed `event.cpp` and `event.h` (which handles keyboard and mouse events) to `event_listener.cpp` and `event_listener.h` to avoid confusion with the event queue system (`event_queue.cpp` and `event_queue.h`).
 - Quite possibly a few other things that I may have forgotten about.
+- from macjja: made it so clicking advances scene for now (except when some other function is currently being used for clicks)
 
 ## Compiling (for Linux)
 - Make sure you have gcc, make, and allegro installed
