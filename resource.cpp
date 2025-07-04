@@ -11,7 +11,7 @@
 
 using namespace std;
 
-ResourceLoader::ResourceLoader()
+ResourceLoader::ResourceLoader(AudioManager* audio_mng_ptr)
 {
     font = al_create_builtin_font();
     textContainer = al_create_bitmap(0, 0);
@@ -20,6 +20,7 @@ ResourceLoader::ResourceLoader()
     numScenes = 0;
     backgrounds = NULL;
     loadedScenes = NULL;
+    audioManager = audio_mng_ptr;
 }
 ResourceLoader::~ResourceLoader()
 {
@@ -43,6 +44,8 @@ void ResourceLoader::load(int bank, void* gm_ptr)
     {
         case 0:
         {
+            audioManager->load_sample("bg_music", "music.opus");
+            audioManager->load_sample("short_clip" , "music_short.opus");
             textContainer = al_load_bitmap("./dialogue.png");
             nameContainer = al_load_bitmap("./name_container.png");
             numBackgrounds = 1;
@@ -50,7 +53,7 @@ void ResourceLoader::load(int bank, void* gm_ptr)
             backgrounds[0] = al_load_bitmap("./background/test.png");
             numScenes = 1;
             loadedScenes = (Scene**)malloc(sizeof(void*));
-            loadedScenes[0] = new Scene(gm_ptr, backgrounds[0], &scene0, NULL, NULL, &scene0_end);
+            loadedScenes[0] = new Scene(gm_ptr, backgrounds[0], &scene0_0, NULL, NULL, &scene0_end);
             cout << "Loaded scenes: " << loadedScenes << endl << "[0]: " << loadedScenes[0] << endl;
             break;
         }

@@ -40,6 +40,7 @@ void Scene::dialogue_end_event()
 
 void Scene::set_click_event(void (*ce)(void*, int, int))
 {
+    cout << "Set click event" << endl;
     clickEvent = ce;
 }
 void Scene::set_key_press_event(void (*kpe)(void*, int))

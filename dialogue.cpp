@@ -1,17 +1,23 @@
 /* Implementation of the Scene class */
 
 #include <iostream>
+#include <cmath>
 #include "dialogue.h"
 
 using namespace std;
 
+int smooth_transition(int l_bound, int r_bound, float val)
+{
+    //return (2 - (cos(val * M_PI) + 1)) * (r_bound - l_bound) / 2 + l_bound;
+    return sqrt(1.0 - pow(val - 1, 2)) * (r_bound - l_bound) + l_bound;
+}
+
 Dialogue::Dialogue(ResourceLoader* data)
 {
+    transition = 0.0;
     state = 0;
-    currentLine = 0;
     currentChar = 0;
     name = "";
-    showName = false;
     
     font = data->get_font();
     textContainer = data->get_text_container();
@@ -20,8 +26,9 @@ Dialogue::Dialogue(ResourceLoader* data)
     dialogueStartTime = clock();
 }
 
-void Dialogue::draw(int y) const
+void Dialogue::draw()
 {
+    int y = 372 - smooth_transition(0, 72, transition);
     if (text.size() > 0 && state > 0)
     {
         if (textContainer != NULL)
@@ -29,35 +36,57 @@ void Dialogue::draw(int y) const
             al_draw_bitmap(textContainer, 0, y, 0);
         }
         
-        if (showName)
+        if (name != "")
         {
             if (nameContainer != NULL)
-                al_draw_bitmap(nameContainer, 0, y - 10, 0);
-            al_draw_text(font, al_map_rgb(255, 255, 255), 2, y - 8, 0, name.c_str());
+            {
+                //cout << ((int)(name.size()) - 40) * 8 << endl;
+                al_draw_bitmap(nameContainer, ((int)(name.size()) - 39) * 8, y - 12, 0);
+            }
+            al_draw_text(font, al_map_rgb(255, 255, 255), 2, y - 9, 0, name.c_str());
         }
         
-        string str = text[currentLine];
-        int write_y = y + 2;
-        int start = 0;
-        int end = str.find('\n');
-        if (end == -1)
-            end = str.length();
-        
-        while (start < str.length())
+        if (state == 1 || state == 2)
         {
-            if (state == 1 && currentChar < end)
+            y = 300;
+            int write_y = y + 3;
+            int start = 0;
+            int end = text.find('\n');
+            if (end == -1)
+                end = text.length();
+            
+            while (start < text.length())
             {
-                al_draw_text(font, al_map_rgb(255, 255, 255), 2, write_y, 0, str.substr(start, currentChar - start + 1).c_str());
-                break;
+                if (state == 1 && currentChar < end)
+                {
+                    al_draw_text(font, al_map_rgb(255, 255, 255), 2, write_y, 0, text.substr(start, currentChar - start + 1).c_str());
+                    break;
+                }
+                else
+                {
+                    al_draw_text(font, al_map_rgb(255, 255, 255), 2, write_y, 0, text.substr(start, end - start).c_str());
+                    start = end + 1;
+                    end = text.find('\n', start);
+                    if (end == -1)
+                        end = text.length();
+                    write_y += 12;
+                }
             }
+        }
+        else if (state == 3)
+        {
+            if (transition < 1)
+                transition += 0.1;
+            else
+                state = 1;
+        }
+        else if (state == 4)
+        {
+            if (transition > 0.0)
+                transition -= 0.1;
             else
             {
-                al_draw_text(font, al_map_rgb(255, 255, 255), 2, write_y, 0, str.substr(start, end - start).c_str());
-                start = end + 1;
-                end = str.find('\n', start);
-                if (end == -1)
-                    end = str.length();
-                write_y += 8;
+                state = 0;
             }
         }
     }
@@ -69,26 +98,25 @@ int& Dialogue::get_state()
 }
 void Dialogue::set_text(string str)
 {
-    cout << this << ": Setting text to " << str << endl;
-    str = insert_newlines(str);
-    text.push_back(str);
-    if (state == 0)
-        state = 1;
+    cout << "test" << endl;
+    text = insert_newlines(str);
+    if (state == 0 || state == 2)
+    {
+        state = 3;
+    }
 }
 void Dialogue::set_text(string str, string nm)
 {
-    cout << this << ": Setting text to " << str << endl;
-    str = insert_newlines(str);
-    text.push_back(str);
-    if (nm != "")
+    text = insert_newlines(str);
+    if (state == 0)
     {
-        name = nm;
-        showName = true;
+        state = 3;
     }
-    else
+    else if (state == 2 || state == 4)
     {
-        showName = false;
+        state = 1;
     }
+    name = nm;
 }
 
 string Dialogue::insert_newlines(string str) 
@@ -130,48 +158,26 @@ string Dialogue::insert_newlines(string str)
   return str;
 }
 
-vector<string>& Dialogue::get_text()
+const string Dialogue::get_text()
 {
     return text;
-}
-bool Dialogue::next_line()
-{
-    currentLine++;
-    if (currentLine >= text.size())
-    {
-        state = 0;
-        currentLine = 0;
-        text.clear();
-        return false;
-    }
-    state = 1;
-    currentChar = 0;
-    dialogueStartTime = clock();
-    return true;
-}
-string Dialogue::get_current_line() const
-{
-    return text[currentLine];
 }
 bool Dialogue::next_char()
 {
     currentChar++;
-    if (currentChar >= text[currentLine].size())
+    if (currentChar >= text.size())
     {
         state = 2;
+        currentChar = 0;
         return false;
     }
     return true;
 }
 char Dialogue::get_current_char() const
 {
-    return text[currentLine][currentChar];
+    return text[currentChar];
 }
 string Dialogue::get_name() const
 {
     return name;
-}
-bool& Dialogue::show_name()
-{
-    return showName;
 }

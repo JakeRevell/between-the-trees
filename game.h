@@ -5,13 +5,19 @@
 
 #include <allegro5/allegro.h>
 #include <cmath>
+#include <ctime>
+#include <queue>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "window.h"
 #include "resource.h"
 #include "scene.h"
 #include "dialogue.h"
+#include "audio.h"
+#include "event_queue.h"
 
 class Game {
     public:
@@ -23,8 +29,17 @@ class Game {
         Scene* get_scene();
         int& get_scene_index();
         Dialogue& get_dialogue_box() const;
-        void set_text(string);
-        void set_text(string, string);
+        AudioManager& get_audio_manager() const;
+        void clear_event_queue();
+        void set_text(string, string="");
+        void play_audio(string, bool=false, float=0.0, float=0.0, float=1.0);
+        void stop_audio(string);
+        void play_func(void (*)(void*));
+        void after(float, void (*)(void*)); //used to add a scheduled event
+        void next_event();
+        void set_scheduled_func(clock_t, void (*)(void*)); //
+        time_t get_scheduled_time();                       //
+        void play_scheduled_func();                        //used internally by the event queue system (don't call these in func.cpp)
         void set_flag(int, bool);
         bool get_flag(int) const;
         void set_mouse_coords(int, int);
@@ -35,7 +50,11 @@ class Game {
     private:
         Window* window;
         ResourceLoader* data;
+        AudioManager* audioManager;
         Dialogue* dialogueBox;
+        queue<Event> eventQueue;
+        clock_t waitUntil;
+        void (*scheduledFunc)(void*);
         Scene** scenes;
         ALLEGRO_THREAD* eventThread;
         ALLEGRO_THREAD* drawingThread;

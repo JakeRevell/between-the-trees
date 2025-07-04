@@ -12,10 +12,15 @@ Game::Game(void* (*event_proc)(ALLEGRO_THREAD*, void*), void* (*drawing_proc)(AL
     window->set_title("Between the Trees");
     window->clear();
     
-    data = new ResourceLoader();
+    audioManager = new AudioManager();
+
+    data = new ResourceLoader(audioManager);
     data->load(0, this);
     
     dialogueBox = new Dialogue(data);
+    
+    waitUntil = 0;
+    scheduledFunc = NULL;
     
     eventThread = al_create_thread(event_proc, this);
     drawingThread = al_create_thread(drawing_proc, this);
@@ -50,6 +55,7 @@ Game::~Game()
     delete data;
     delete window;
     delete dialogueBox;
+    delete audioManager;
 }
 
 Window* Game::get_window()
@@ -84,15 +90,68 @@ Dialogue& Game::get_dialogue_box() const
 {
     return *dialogueBox;
 }
-
-void Game::set_text(string str)
+AudioManager& Game::get_audio_manager() const
 {
-    cout << "Dialogue box: " << dialogueBox << endl;
-    dialogueBox->set_text(str);
+    return *audioManager;
 }
+
+void Game::clear_event_queue()
+{
+    queue<Event> empty;
+    eventQueue.swap(empty);
+}
+
 void Game::set_text(string str, string name)
 {
-    dialogueBox->set_text(str, name);
+    eventQueue.emplace(DIALOGUE_TEXT_EVENT, new DialogueEvent{str, name});
+}
+void Game::play_audio(string name, bool loop, float gain, float pan, float speed)
+{
+    eventQueue.emplace(AUDIO_START_EVENT, new AudioEvent{name, loop, gain, pan, speed});
+}
+void Game::stop_audio(string name)
+{
+    eventQueue.emplace(AUDIO_STOP_EVENT, new AudioEvent{name, 0});
+}
+void Game::play_func(void (*func)(void*))
+{
+    eventQueue.emplace(FUNC_EVENT, new FuncEvent{func});
+}
+void Game::after(float secs, void (*func)(void*))
+{
+    eventQueue.emplace(WAIT_EVENT, new WaitEvent{secs, func});
+}
+void Game::next_event()
+{
+    if (eventQueue.size() > 0)
+    {
+        Event& event = eventQueue.front();
+        event.play(this);
+        EventType type = event.get_event_type();
+        eventQueue.pop();
+        if (type != DIALOGUE_TEXT_EVENT && type != DIALOGUE_OPTION_EVENT && dialogueBox->get_state() != 0)
+            dialogueBox->get_state() = 4;
+        if (type == AUDIO_START_EVENT || type == AUDIO_STOP_EVENT || type == WAIT_EVENT)
+            next_event();
+    }
+    else
+        if (dialogueBox->get_state() == 2)
+            dialogueBox->get_state() = 4;
+}
+
+void Game::set_scheduled_func(clock_t tm, void (*func)(void*))
+{
+    waitUntil = tm;
+    scheduledFunc = func;
+}
+time_t Game::get_scheduled_time()
+{
+    return waitUntil;
+}
+void Game::play_scheduled_func()
+{
+    waitUntil = 0;
+    scheduledFunc(this);
 }
 
 void Game::set_flag(int flag, bool val)

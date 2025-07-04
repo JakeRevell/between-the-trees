@@ -13,7 +13,7 @@ void* drawer(ALLEGRO_THREAD* thr, void* arg)
     Scene* scene;
     Dialogue& dialogueBox = game.get_dialogue_box();
     
-    ALLEGRO_TIMER* fpsTimer = al_create_timer(1.0 / 60.0);
+    ALLEGRO_TIMER* fpsTimer = al_create_timer(1.0 / 30.0);
     ALLEGRO_EVENT_QUEUE* fpsQueue = al_create_event_queue();
     al_register_event_source(fpsQueue, al_get_timer_event_source(fpsTimer));
     ALLEGRO_EVENT event;
@@ -35,8 +35,8 @@ void* drawer(ALLEGRO_THREAD* thr, void* arg)
         
         if (dialogueBox.get_state() != 0)
         {
-            dialogueBox.draw(300);
-            if ((clock() - dialogueBox.dialogueStartTime) % 2 == 0 && dialogueBox.get_state() == 1)
+            dialogueBox.draw();
+            if (dialogueBox.get_state() == 1)
                 dialogueBox.next_char();
         }
         
