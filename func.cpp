@@ -1,6 +1,7 @@
 /* Implementations of the scene functions */
 
 #include <iostream>
+#include "dialogue.h"
 #include "game.h"
 #include "func.h"
 
@@ -69,7 +70,23 @@ void scene0_click(void* gm_ptr, int x, int y)
 
 void advance_on_click(void* gm_ptr, int x, int y) {
     Game& game = *(Game*)gm_ptr;
-    game.next_event();
+    Dialogue& dialogueBox = game.get_dialogue_box();
+    switch (dialogueBox.get_state())
+    {
+        case 1:
+            dialogueBox.get_state() = 2;
+            break;
+        case 3:
+            dialogueBox.get_state() = 1;
+            break;
+        case 4:
+            dialogueBox.get_state() = 0;
+            break;
+        default:
+            game.next_event();
+            break;
+    }
+
 }
 
 void scene0_end(void* gm_ptr)
