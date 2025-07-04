@@ -73,28 +73,29 @@ void* event_listener(ALLEGRO_THREAD* thr, void* arg)
             {
                 //code here for choosing dialogue options
             }
-            else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER)
+            else if (game.get_scene() != NULL)
             {
-                switch (dialogueBox.get_state())
+                if (!(game.get_scene()->key_press_event(event.keyboard.keycode)) && event.keyboard.keycode == ALLEGRO_KEY_ENTER)
                 {
-                    case 1:
-                        dialogueBox.get_state() = 2;
-                        break;
-                    case 3:
-                        dialogueBox.get_state() = 1;
-                        break;
-                    case 4:
-                        dialogueBox.get_state() = 0;
-                        break;
-                    default:
-                        game.next_event();
-                        if (dialogueBox.get_state() == 1 && shiftKey)
+                    switch (dialogueBox.get_state())
+                    {
+                        case 1:
                             dialogueBox.get_state() = 2;
-                        break;
+                            break;
+                        case 3:
+                            dialogueBox.get_state() = 1;
+                            break;
+                        case 4:
+                            dialogueBox.get_state() = 0;
+                            break;
+                        default:
+                            game.next_event();
+                            if (dialogueBox.get_state() == 1 && shiftKey)
+                                dialogueBox.get_state() = 2;
+                            break;
+                    }
                 }
             }
-            else if (game.get_scene() != NULL)
-                game.get_scene()->key_press_event(event.keyboard.keycode);
         }
         else if (event.type == ALLEGRO_EVENT_KEY_UP)
         {
@@ -110,7 +111,26 @@ void* event_listener(ALLEGRO_THREAD* thr, void* arg)
             if (game.get_scene() != NULL)
             {
                 cout << "click!" << endl;
-                game.get_scene()->click_event((mouseState.x - window->get_bitmap_x()) / window->get_pix_width(), (mouseState.y  - window->get_bitmap_y()) / window->get_pix_height());
+                if (!(game.get_scene()->click_event((mouseState.x - window->get_bitmap_x()) / window->get_pix_width(), (mouseState.y  - window->get_bitmap_y()) / window->get_pix_height())))
+                {
+                    switch (dialogueBox.get_state())
+                    {
+                        case 1:
+                            dialogueBox.get_state() = 2;
+                                break;
+                        case 3:
+                            dialogueBox.get_state() = 1;
+                            break;
+                        case 4:
+                            dialogueBox.get_state() = 0;
+                            break;
+                        default:
+                            game.next_event();
+                            if (dialogueBox.get_state() == 1 && shiftKey)
+                                dialogueBox.get_state() = 2;
+                            break;
+                    }
+                }
             }
         }
         

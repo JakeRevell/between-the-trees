@@ -10,8 +10,8 @@ class Scene
     public:
         Scene(void*, ALLEGRO_BITMAP*, void (*)(void*), void (*)(void*, int, int), void (*)(void*, int), void (*)(void*));
         void start();
-        void click_event(int, int);
-        void key_press_event(int);
+        bool click_event(int, int);
+        bool key_press_event(int);
         void dialogue_end_event();
         void set_click_event(void (*)(void*, int, int));
         void set_key_press_event(void (*)(void*, int));

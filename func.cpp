@@ -1,7 +1,6 @@
 /* Implementations of the scene functions */
 
 #include <iostream>
-#include "dialogue.h"
 #include "game.h"
 #include "func.h"
 
@@ -26,8 +25,7 @@ void scene0_0(void* gm_ptr)
     game.stop_audio("bg_music");
     game.after(5.0, scene0_1);
     game.set_text("Scheduled event test (wait 5 seconds)");
-   
-    game.get_scene()->set_click_event(advance_on_click);
+    
     game.next_event(); //this should always be added at the end of these functions
 }
 void scene0_1(void* gm_ptr)
@@ -59,34 +57,13 @@ void scene0_click(void* gm_ptr, int x, int y)
     cout << "scene0_click" << endl;
     Game& game = *(Game*)gm_ptr;
     game.clear_event_queue();
-    game.get_scene()->set_click_event(advance_on_click);
+    game.get_scene()->set_click_event(NULL);
     
     game.set_text("You clicked at coordinates " + to_string(x) + ", " + to_string(y) + "!");
     game.set_text("Tests complete!");
     game.play_func(scene0_end);
     
     game.next_event();
-}
-
-void advance_on_click(void* gm_ptr, int x, int y) {
-    Game& game = *(Game*)gm_ptr;
-    Dialogue& dialogueBox = game.get_dialogue_box();
-    switch (dialogueBox.get_state())
-    {
-        case 1:
-            dialogueBox.get_state() = 2;
-            break;
-        case 3:
-            dialogueBox.get_state() = 1;
-            break;
-        case 4:
-            dialogueBox.get_state() = 0;
-            break;
-        default:
-            game.next_event();
-            break;
-    }
-
 }
 
 void scene0_end(void* gm_ptr)

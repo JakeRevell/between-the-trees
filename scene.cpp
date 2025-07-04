@@ -22,15 +22,26 @@ void Scene::start()
     if (startingFunc != NULL)
         startingFunc(game_ptr);
 }
-void Scene::click_event(int x, int y)
+bool Scene::click_event(int x, int y)
 {
     if (clickEvent != NULL)
+    {
         clickEvent(game_ptr, x, y);
+        return true;
+    }
+    else
+        return false;
+    
 }
-void Scene::key_press_event(int keyCode)
+bool Scene::key_press_event(int keyCode)
 {
     if (keyPressEvent != NULL)
+    {
         keyPressEvent(game_ptr, keyCode);
+        return true;
+    }
+    else
+        return false;
 }
 void Scene::dialogue_end_event()
 {
