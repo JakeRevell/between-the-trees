@@ -13,6 +13,7 @@
 */
 
 #include "actor.h"
+#include <allegro5/bitmap.h>
 #include <allegro5/bitmap_draw.h>
 #include <iostream>
 #include <allegro5/bitmap_io.h>
@@ -23,6 +24,12 @@ Actor::Actor(string input_name) {
   name = input_name;
   visible = false;
   image = NULL;
+}
+
+Actor::~Actor() {
+  if (image) {
+    al_destroy_bitmap(image);
+  }
 }
 
 string Actor::get_name() {
@@ -37,11 +44,14 @@ string Actor::get_emotion() {
 void Actor::load_emotion(string input_emotion) {
   string path = name + "/" + input_emotion + ".png";
   ALLEGRO_BITMAP* bitmap = al_load_bitmap(path.c_str());
+
   if (bitmap == NULL) {
     cout << name << " does not have emotion '" << input_emotion << "'" << endl;
     return;
   }
   emotion = input_emotion;
+  if (image)
+    al_destroy_bitmap(image);
   image = bitmap;
 } 
 
