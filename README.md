@@ -1,5 +1,19 @@
 ## Changes and Additions in the Latest Commit
 
+### Actors!
+- Implemented Actors from the "actors", with a few commands themselves:
+  - `get_name()`
+  - `get_emotion()`
+  - `load_emotion(string name)` will load the given image
+  - `show()` and `hide()` functions to show and hide the actor
+  - `set_position()` to set the x and y position of the actor
+  - a `draw()` function that gets called by the scene
+- The scene has the following new functions:
+  - `add_actor(Actor* actor)`, which adds the given actor to the scene
+  - `get_actor(string actor_name)`, which gets the actor if found, or returns `NULL`
+
+## Changes and additions from the Previous Commits
+
 ### Audio System
 - Implemented the audio system from the "audio" branch, with some modifications:
   - Audio can now be stopped.
