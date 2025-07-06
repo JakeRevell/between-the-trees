@@ -3,6 +3,8 @@
 #include <iostream>
 #include "game.h"
 #include "func.h"
+#include "scene.h"
+#include "actor.h"
 
 using namespace std;
 
@@ -11,6 +13,11 @@ void scene0_0(void* gm_ptr)
     cout << "scene0_0" << endl;
     Game& game = *(Game*)gm_ptr;
     
+    Scene* current_scene = game.get_scene();
+    Actor test = Actor("Car");
+    test.load_emotion("happy");
+    current_scene->add_actor(&test);
+
     game.set_text("Dialogue test");
     game.set_text("Dialogue with name test", "Bob");
     game.play_audio("bg_music");
@@ -23,7 +30,7 @@ void scene0_0(void* gm_ptr)
     game.play_audio("bg_music", 0, -0.95, -1.0, 2.0);
     game.set_text("Audio gain, pan, and speed test");
     game.stop_audio("bg_music");
-    game.after(5.0, scene0_1);
+    game.after(1.0, scene0_2);
     game.set_text("Scheduled event test (wait 5 seconds)");
     
     game.next_event(); //this should always be added at the end of these functions
@@ -38,6 +45,22 @@ void scene0_1(void* gm_ptr)
     game.set_text("Keyboard event test: please press any key");
     
     game.next_event();
+}
+
+void scene0_2(void* gm_ptr)
+{
+  cout << "scene0_2" << endl;
+  Game& game = *(Game*)gm_ptr;
+  Actor* car = game.get_scene()->get_actor("Car");
+  if (car == NULL) {
+    cout << "car is null" << endl;
+  }
+  car->set_position(100, 100);
+  car->show();
+  cout << car->get_emotion() << endl;
+  game.set_text("I am a car", car->get_name());
+
+  game.next_event();
 }
 
 void scene0_keypress(void* gm_ptr, int key)

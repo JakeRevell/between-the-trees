@@ -1,8 +1,11 @@
-between_the_trees.exe: main.cpp window.o scene.o audio.o resource.o dialogue.o event_queue.o game.o event_listener.o draw.o func.o
-	g++ main.cpp window.o scene.o audio.o resource.o dialogue.o event_queue.o game.o event_listener.o draw.o func.o -o between_the_trees.exe -lallegro -lallegro_image -lallegro_primitives -lallegro_font -lallegro_audio -lallegro_acodec
+between_the_trees.exe: main.cpp window.o scene.o audio.o resource.o dialogue.o event_queue.o game.o event_listener.o draw.o func.o actor.o
+	g++ -g main.cpp window.o scene.o audio.o resource.o dialogue.o event_queue.o game.o event_listener.o actor.o draw.o func.o -o between_the_trees.exe -lallegro -lallegro_image -lallegro_primitives -lallegro_font -lallegro_audio -lallegro_acodec
 
-func.o: func.cpp func.h game.h
+func.o: func.cpp func.h game.h scene.h actor.h
 	g++ -c func.cpp -o func.o
+
+actor.o: actor.cpp actor.h
+	g++ -c actor.cpp -o actor.o -lallegro -lallegro_image
 
 event_listener.o: event_listener.cpp event_listener.h game.h window.h scene.h dialogue.h
 	g++ -c event_listener.cpp -o event_listener.o -lallegro -lallegro_primitives -lallegro_font -lallegro_audio

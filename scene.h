@@ -4,6 +4,8 @@
 #define SCENE_H_INCLUDED
 
 #include <allegro5/allegro.h>
+#include "actor.h"
+#include <unordered_map>
 
 class Scene
 {
@@ -16,6 +18,8 @@ class Scene
         void set_click_event(void (*)(void*, int, int));
         void set_key_press_event(void (*)(void*, int));
         void set_dialogue_end_event(void (*)(void*));
+        Actor* get_actor(string);
+        void add_actor(Actor*);
         void draw();
     private:
         void* game_ptr;
@@ -24,6 +28,7 @@ class Scene
         void (*keyPressEvent)(void*, int);
         void (*dialogueEndEvent)(void*);
         ALLEGRO_BITMAP* background;
+        unordered_map<string, Actor*> actors;
 };
 
 #endif

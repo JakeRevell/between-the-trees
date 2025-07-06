@@ -69,7 +69,7 @@ void Actor::set_position(int px, int py) {
 }
 
 void Actor::draw() {
-  if (visible) {
+  if (false) {
     al_draw_bitmap(image, x, y, 0);
   }
 }
