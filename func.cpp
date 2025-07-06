@@ -14,9 +14,9 @@ void scene0_0(void* gm_ptr)
     Game& game = *(Game*)gm_ptr;
     
     Scene* current_scene = game.get_scene();
-    Actor test = Actor("Car");
-    test.load_emotion("happy");
-    current_scene->add_actor(&test);
+    Actor* test = new Actor("Car");
+    test->load_emotion("happy");
+    current_scene->add_actor(test);
 
     game.set_text("Dialogue test");
     game.set_text("Dialogue with name test", "Bob");
@@ -30,7 +30,7 @@ void scene0_0(void* gm_ptr)
     game.play_audio("bg_music", 0, -0.95, -1.0, 2.0);
     game.set_text("Audio gain, pan, and speed test");
     game.stop_audio("bg_music");
-    game.after(1.0, scene0_2);
+    game.after(5.0, scene0_1);
     game.set_text("Scheduled event test (wait 5 seconds)");
     
     game.next_event(); //this should always be added at the end of these functions
@@ -55,10 +55,12 @@ void scene0_2(void* gm_ptr)
   if (car == NULL) {
     cout << "car is null" << endl;
   }
+  car->load_emotion("never");
   car->set_position(100, 100);
   car->show();
   cout << car->get_emotion() << endl;
   game.set_text("I am a car", car->get_name());
+  game.play_func(scene0_end);
 
   game.next_event();
 }
@@ -84,7 +86,7 @@ void scene0_click(void* gm_ptr, int x, int y)
     
     game.set_text("You clicked at coordinates " + to_string(x) + ", " + to_string(y) + "!");
     game.set_text("Tests complete!");
-    game.play_func(scene0_end);
+    game.after(0.0, scene0_2);
     
     game.next_event();
 }
