@@ -3,6 +3,8 @@
 #include <iostream>
 #include "game.h"
 #include "func.h"
+#include "scene.h"
+#include "actor.h"
 
 using namespace std;
 
@@ -11,6 +13,11 @@ void scene0_0(void* gm_ptr)
     cout << "scene0_0" << endl;
     Game& game = *(Game*)gm_ptr;
     
+    Scene* current_scene = game.get_scene();
+    Actor* test = new Actor("Car");
+    test->load_emotion("happy");
+    current_scene->add_actor(test);
+
     game.set_text("Dialogue test");
     game.set_text("Dialogue with name test", "Bob");
     game.play_audio("bg_music");
@@ -40,6 +47,24 @@ void scene0_1(void* gm_ptr)
     game.next_event();
 }
 
+void scene0_2(void* gm_ptr)
+{
+  cout << "scene0_2" << endl;
+  Game& game = *(Game*)gm_ptr;
+  Actor* car = game.get_scene()->get_actor("Car");
+  if (car == NULL) {
+    cout << "car is null" << endl;
+  }
+  car->load_emotion("never");
+  car->set_position(100, 100);
+  car->show();
+  cout << car->get_emotion() << endl;
+  game.set_text("I am a car", car->get_name());
+  game.play_func(scene0_end);
+
+  game.next_event();
+}
+
 void scene0_keypress(void* gm_ptr, int key)
 {
     cout << "scene0_keypress" << endl;
@@ -61,7 +86,7 @@ void scene0_click(void* gm_ptr, int x, int y)
     
     game.set_text("You clicked at coordinates " + to_string(x) + ", " + to_string(y) + "!");
     game.set_text("Tests complete!");
-    game.play_func(scene0_end);
+    game.after(0.0, scene0_2);
     
     game.next_event();
 }

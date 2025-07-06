@@ -63,8 +63,25 @@ void Scene::set_dialogue_end_event(void (*dee)(void*))
     dialogueEndEvent = dee;
 }
 
+Actor* Scene::get_actor(string actor_name) 
+{
+  auto search = actors.find(actor_name);
+  if (search != actors.end())
+    return actors[actor_name];
+  return NULL;
+}
+
+void Scene::add_actor(Actor* actor) 
+{
+  if (actor != NULL)
+    actors[actor->get_name()] = actor;
+}
+
 void Scene::draw()
 {
     if (background != NULL)
         al_draw_bitmap(background, 0, 0, 0);
+    for (auto pair : actors) {
+        pair.second->draw();
+    }
 }
