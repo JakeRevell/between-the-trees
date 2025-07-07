@@ -123,7 +123,7 @@ void Game::after(float secs, void (*func)(void*))
 }
 void Game::next_event()
 {
-    if (eventQueue.size() > 0)
+    if (!(eventQueue.empty()))
     {
         Event& event = eventQueue.front();
         event.play(this);
@@ -131,12 +131,14 @@ void Game::next_event()
         eventQueue.pop();
         if (type != DIALOGUE_TEXT_EVENT && type != DIALOGUE_OPTION_EVENT && dialogueBox->get_state() != 0)
             dialogueBox->get_state() = 4;
-        if (type == AUDIO_START_EVENT || type == AUDIO_STOP_EVENT || type == WAIT_EVENT)
+        if (type == AUDIO_START_EVENT || type == AUDIO_STOP_EVENT || type == WAIT_EVENT || type == FUNC_EVENT)
             next_event();
     }
     else
+    {
         if (dialogueBox->get_state() == 2)
             dialogueBox->get_state() = 4;
+    }
 }
 
 void Game::set_scheduled_func(clock_t tm, void (*func)(void*))
@@ -152,6 +154,7 @@ void Game::play_scheduled_func()
 {
     waitUntil = 0;
     scheduledFunc(this);
+    next_event();
 }
 
 void Game::set_flag(int flag, bool val)

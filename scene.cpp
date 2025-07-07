@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "scene.h"
+#include "game.h"
 
 using namespace std;
 
@@ -20,13 +21,17 @@ void Scene::start()
 {
     cout << "Scene " << this << " starting!" << endl;
     if (startingFunc != NULL)
+    {
         startingFunc(game_ptr);
+        ((Game*)game_ptr)->next_event();
+    }
 }
 bool Scene::click_event(int x, int y)
 {
     if (clickEvent != NULL)
     {
         clickEvent(game_ptr, x, y);
+        ((Game*)game_ptr)->next_event();
         return true;
     }
     else
@@ -38,6 +43,7 @@ bool Scene::key_press_event(int keyCode)
     if (keyPressEvent != NULL)
     {
         keyPressEvent(game_ptr, keyCode);
+        ((Game*)game_ptr)->next_event();
         return true;
     }
     else

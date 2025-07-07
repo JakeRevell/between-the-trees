@@ -18,6 +18,8 @@ void scene0_0(void* gm_ptr)
     test->load_emotion("happy");
     current_scene->add_actor(test);
 
+    cout << "test 0" << endl;
+    
     game.set_text("Dialogue test");
     game.set_text("Dialogue with name test", "Bob");
     game.play_audio("bg_music");
@@ -32,8 +34,6 @@ void scene0_0(void* gm_ptr)
     game.stop_audio("bg_music");
     game.after(5.0, scene0_1);
     game.set_text("Scheduled event test (wait 5 seconds)");
-    
-    game.next_event(); //this should always be added at the end of these functions
 }
 void scene0_1(void* gm_ptr)
 {
@@ -43,8 +43,6 @@ void scene0_1(void* gm_ptr)
     
     game.play_audio("bg_music", 1);
     game.set_text("Keyboard event test: please press any key");
-    
-    game.next_event();
 }
 
 void scene0_2(void* gm_ptr)
@@ -61,8 +59,6 @@ void scene0_2(void* gm_ptr)
   cout << car->get_emotion() << endl;
   game.set_text("I am a car", car->get_name());
   game.play_func(scene0_end);
-
-  game.next_event();
 }
 
 void scene0_keypress(void* gm_ptr, int key)
@@ -74,8 +70,6 @@ void scene0_keypress(void* gm_ptr, int key)
     game.get_scene()->set_click_event(scene0_click);
     
     game.set_text("You pressed the " + (string)al_keycode_to_name(key) + " key!\nClick event test: click the screen somewhere");
-    
-    game.next_event();
 }
 void scene0_click(void* gm_ptr, int x, int y)
 {
@@ -86,9 +80,7 @@ void scene0_click(void* gm_ptr, int x, int y)
     
     game.set_text("You clicked at coordinates " + to_string(x) + ", " + to_string(y) + "!");
     game.set_text("Tests complete!");
-    game.after(0.0, scene0_2);
-    
-    game.next_event();
+    game.play_func(scene0_2);
 }
 
 void scene0_end(void* gm_ptr)
