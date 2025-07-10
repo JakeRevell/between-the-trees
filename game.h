@@ -32,6 +32,7 @@ class Game {
         AudioManager& get_audio_manager() const;
         void clear_event_queue();
         void set_text(string, string="");
+        void set_option(string, void (*)(void*));
         void play_audio(string, bool=false, float=0.0, float=0.0, float=1.0);
         void stop_audio(string);
         void play_func(void (*)(void*));
@@ -39,7 +40,8 @@ class Game {
         void next_event();
         void set_scheduled_func(clock_t, void (*)(void*)); //
         time_t get_scheduled_time();                       //
-        void play_scheduled_func();                        //used internally by the event queue system (don't call these in func.cpp)
+        void play_scheduled_func();                        //
+        void play_selected_option();                       //used internally by the event queue system (don't call these in func.cpp)
         void set_flag(int, bool);
         bool get_flag(int) const;
         void set_mouse_coords(int, int);

@@ -105,6 +105,10 @@ void Game::set_text(string str, string name)
 {
     eventQueue.emplace(DIALOGUE_TEXT_EVENT, new DialogueEvent{str, name});
 }
+void Game::set_option(string text, void (*func)(void*))
+{
+    eventQueue.emplace(DIALOGUE_OPTION_EVENT, new DialogueOptionEvent{text, func});
+}
 void Game::play_audio(string name, bool loop, float gain, float pan, float speed)
 {
     eventQueue.emplace(AUDIO_START_EVENT, new AudioEvent{name, loop, gain, pan, speed});
@@ -129,14 +133,20 @@ void Game::next_event()
         event.play(this);
         EventType type = event.get_event_type();
         eventQueue.pop();
-        if (type != DIALOGUE_TEXT_EVENT && type != DIALOGUE_OPTION_EVENT && dialogueBox->get_state() != 0)
-            dialogueBox->get_state() = 4;
-        if (type == AUDIO_START_EVENT || type == AUDIO_STOP_EVENT || type == WAIT_EVENT || type == FUNC_EVENT)
-            next_event();
+        if (!(eventQueue.empty()))
+        {
+            if (type != DIALOGUE_TEXT_EVENT && type != DIALOGUE_OPTION_EVENT && dialogueBox->get_state() != 0)
+            {
+                dialogueBox->get_state() = 4;
+                next_event();
+            }
+            else if (eventQueue.front().get_event_type() == DIALOGUE_OPTION_EVENT)
+                next_event();
+        }
     }
     else
     {
-        if (dialogueBox->get_state() == 2)
+        if (dialogueBox->get_state() == 2 && !(dialogueBox->is_on_option_chooser()))
             dialogueBox->get_state() = 4;
     }
 }
@@ -155,6 +165,10 @@ void Game::play_scheduled_func()
     waitUntil = 0;
     scheduledFunc(this);
     next_event();
+}
+void Game::play_selected_option()
+{
+    dialogueBox->play_current_option(this);
 }
 
 void Game::set_flag(int flag, bool val)

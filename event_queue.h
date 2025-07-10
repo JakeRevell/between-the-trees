@@ -27,6 +27,8 @@ struct DialogueEvent
 
 struct DialogueOptionEvent
 {
+    string text;
+    void (*func)(void*);
 };
 
 struct AudioEvent

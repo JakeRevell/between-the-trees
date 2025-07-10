@@ -17,6 +17,7 @@ Dialogue::Dialogue(ResourceLoader* data)
     transition = 0.0;
     state = 0;
     currentChar = 0;
+    currentOp = -1;
     name = "";
     
     font = data->get_font();
@@ -72,6 +73,21 @@ void Dialogue::draw()
                     write_y += 12;
                 }
             }
+            if (state == 2 && options.size() > 0)
+            {
+                for (int opn = 0; opn < options.size(); opn++)
+                {
+                    if (opn == currentOp)
+                        al_draw_text(font, al_map_rgb(255, 255, 255), 2, write_y, 0, ("> " + options[opn].txt).c_str());
+                    else
+                        al_draw_text(font, al_map_rgb(192, 192, 192), 18, write_y, 0, options[opn].txt.c_str());
+                    options[opn].y = write_y;
+                    write_y += 12;
+                }
+                onOptionChooser = true;
+            }
+            else
+                onOptionChooser = false;
         }
         else if (state == 3)
         {
@@ -107,6 +123,7 @@ void Dialogue::set_text(string str)
 }
 void Dialogue::set_text(string str, string nm)
 {
+    currentChar = 0;
     text = insert_newlines(str);
     if (state == 0)
     {
@@ -118,6 +135,48 @@ void Dialogue::set_text(string str, string nm)
     }
     name = nm;
 }
+void Dialogue::set_option(string text, void (*func)(void*))
+{
+    options.emplace_back(Option{text, func, 0});
+}
+bool Dialogue::set_current_option_by_y(int y)
+{
+    int upperBound = 360;
+    for (int op = options.size() - 1; op >= 0; op--)
+    {
+        if (y >= options[op].y && y < upperBound)
+        {
+            currentOp = op;
+            return true;
+        }
+        upperBound = options[op].y;
+    }
+    currentOp = -1;
+    return false;
+}
+const int Dialogue::get_num_options()
+{
+    return options.size();
+}
+int& Dialogue::current_option()
+{
+    return currentOp;
+}
+void Dialogue::play_current_option(void* gm_ptr)
+{
+    if (currentOp >= 0)
+    {
+        options[currentOp].func(gm_ptr);
+        options.clear();
+        onOptionChooser = false;
+        currentOp = -1;
+    }
+}
+const bool Dialogue::is_on_option_chooser()
+{
+    return onOptionChooser;
+}
+
 
 string Dialogue::insert_newlines(string str) 
 {

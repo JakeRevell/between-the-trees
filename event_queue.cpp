@@ -48,8 +48,12 @@ void Event::play(void* gamePtr)
             break;
         }
         case DIALOGUE_OPTION_EVENT:
-            //not yet implemented
+        {
+            DialogueOptionEvent* do_event = (DialogueOptionEvent*)event;
+            Dialogue& db = game->get_dialogue_box();
+            db.set_option(do_event->text, do_event->func);
             break;
+        }
         case AUDIO_START_EVENT:
         {
             AudioEvent* a_event = (AudioEvent*)event;

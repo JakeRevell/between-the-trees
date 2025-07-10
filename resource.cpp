@@ -53,7 +53,7 @@ void ResourceLoader::load(int bank, void* gm_ptr)
             backgrounds[0] = al_load_bitmap("./background/test.png");
             numScenes = 1;
             loadedScenes = (Scene**)malloc(sizeof(void*));
-            loadedScenes[0] = new Scene(gm_ptr, backgrounds[0], &scene0_0, NULL, NULL, &scene0_end);
+            loadedScenes[0] = new Scene(gm_ptr, backgrounds[0], &scene0_start, NULL, NULL, &scene0_end);
             cout << "Loaded scenes: " << loadedScenes << endl << "[0]: " << loadedScenes[0] << endl;
             break;
         }

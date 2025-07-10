@@ -1,5 +1,14 @@
 ## Changes and Additions in the Latest Commit
 
+### Dialogue options!
+- Finally implemented the ability to choose options from the dialogue
+  - Use the command `set_option(string text, void (*func)(void*))` to add a new option.
+  - This must be called for each option (if you want to have three different choices, this must be called three times).
+  - These commands should be called at the end of the current function.
+  - You can use the mouse or arrow keys to choose between or select the options.
+
+## Changes and additions from the Previous Commits
+
 ### Actors!
 - Implemented Actors from the "actors", with a few commands themselves:
   - `get_name()`
@@ -11,8 +20,6 @@
 - The scene has the following new functions:
   - `add_actor(Actor* actor)`, which adds the given actor to the scene
   - `get_actor(string actor_name)`, which gets the actor if found, or returns `NULL`
-
-## Changes and additions from the Previous Commits
 
 ### Audio System
 - Implemented the audio system from the "audio" branch, with some modifications:

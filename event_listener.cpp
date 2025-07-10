@@ -65,13 +65,19 @@ void* event_listener(ALLEGRO_THREAD* thr, void* arg)
                 window->set_fit_mode(window->get_fit_mode() + 1);
                 window->fit_screen();
             }
-            else if (event.keyboard.keycode == ALLEGRO_KEY_DOWN && dialogueBox.get_state() != 0)
+            else if (event.keyboard.keycode == ALLEGRO_KEY_DOWN && dialogueBox.get_state() == 2 && dialogueBox.is_on_option_chooser())
             {
-                //code here for choosing dialogue options
+                if (dialogueBox.current_option() < dialogueBox.get_num_options() - 1)
+                    dialogueBox.current_option()++;
+                else
+                    dialogueBox.current_option() = 0;
             }
-            else if (event.keyboard.keycode == ALLEGRO_KEY_UP && dialogueBox.get_state() != 0)
+            else if (event.keyboard.keycode == ALLEGRO_KEY_UP && dialogueBox.get_state() == 2 && dialogueBox.is_on_option_chooser())
             {
-                //code here for choosing dialogue options
+                if (dialogueBox.current_option() > 0)
+                    dialogueBox.current_option()--;
+                else
+                    dialogueBox.current_option() = dialogueBox.get_num_options() - 1;
             }
             else if (game.get_scene() != NULL)
             {
@@ -89,6 +95,13 @@ void* event_listener(ALLEGRO_THREAD* thr, void* arg)
                             dialogueBox.get_state() = 0;
                             break;
                         default:
+                            if (dialogueBox.is_on_option_chooser())
+                            {
+                                if (dialogueBox.current_option() < 0 || dialogueBox.current_option() >= dialogueBox.get_num_options())
+                                    break;
+                                else
+                                    game.play_selected_option();
+                            }
                             game.next_event();
                             if (dialogueBox.get_state() == 1 && shiftKey)
                                 dialogueBox.get_state() = 2;
@@ -111,13 +124,18 @@ void* event_listener(ALLEGRO_THREAD* thr, void* arg)
             if (game.get_scene() != NULL)
             {
                 cout << "click!" << endl;
-                if (!(game.get_scene()->click_event((mouseState.x - window->get_bitmap_x()) / window->get_pix_width(), (mouseState.y  - window->get_bitmap_y()) / window->get_pix_height())))
+                if (dialogueBox.is_on_option_chooser() && dialogueBox.set_current_option_by_y((mouseState.y - window->get_bitmap_y()) / window->get_pix_height()))
+                {
+                    game.play_selected_option();
+                    game.next_event();
+                }
+                else if (!(game.get_scene()->click_event((mouseState.x - window->get_bitmap_x()) / window->get_pix_width(), (mouseState.y - window->get_bitmap_y()) / window->get_pix_height())))
                 {
                     switch (dialogueBox.get_state())
                     {
                         case 1:
                             dialogueBox.get_state() = 2;
-                                break;
+                            break;
                         case 3:
                             dialogueBox.get_state() = 1;
                             break;
@@ -132,6 +150,10 @@ void* event_listener(ALLEGRO_THREAD* thr, void* arg)
                     }
                 }
             }
+        }
+        else if (event.type == ALLEGRO_EVENT_MOUSE_AXES && dialogueBox.is_on_option_chooser())
+        {
+            dialogueBox.set_current_option_by_y((mouseState.y - window->get_bitmap_y()) / window->get_pix_height());
         }
         
         if (game.should_stop())
