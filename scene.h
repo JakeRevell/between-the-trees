@@ -19,7 +19,7 @@ class Scene
         void set_key_press_event(void (*)(void*, int));
         void set_dialogue_end_event(void (*)(void*));
         Actor* get_actor(string);
-        void add_actor(Actor*);
+        void create_actor(string);
         void draw();
     private:
         void* game_ptr;

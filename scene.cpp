@@ -77,10 +77,10 @@ Actor* Scene::get_actor(string actor_name)
   return NULL;
 }
 
-void Scene::add_actor(Actor* actor) 
+void Scene::create_actor(string name) 
 {
-  if (actor != NULL)
-    actors[actor->get_name()] = actor;
+  if (!get_actor(name))
+    actors[name] = new Actor(name);
 }
 
 void Scene::draw()

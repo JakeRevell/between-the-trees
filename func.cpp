@@ -14,9 +14,8 @@ void scene0_start(void* gm_ptr)
     Game& game = *(Game*)gm_ptr;
     
     Scene* current_scene = game.get_scene();
-    Actor* test = new Actor("Car");
-    test->load_emotion("happy");
-    current_scene->add_actor(test);
+    current_scene->create_actor("Car");
+    current_scene->get_actor("Car")->load_emotion("happy");
 
     game.set_text("Dialogue test");
     game.set_text("Dialogue with name test", "Bob");
