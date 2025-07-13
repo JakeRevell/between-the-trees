@@ -1,4 +1,10 @@
 ## Changes and Additions in the Latest Commit
+It is a very small commit, but it added:
+- A test build; you can now run `make test` to make a debug build of the game, and use something like gdb for debugging.
+  - Later on, this seperate build could be useful for having a debugger embedded in the game itself, giving useful info and perhaps modification
+- Changed how actors are created; instead of a three line instantion, you can simply call `create_actor(string name)` on a scene, and it will create it for you.
+
+## Changes and additions from the Previous Commits
 
 ### Dialogue options!
 - Finally implemented the ability to choose options from the dialogue
@@ -7,7 +13,7 @@
   - These commands should be called at the end of the current function.
   - You can use the mouse or arrow keys to choose between or select the options.
 
-## Changes and additions from the Previous Commits
+
 
 ### Actors!
 - Implemented Actors from the "actors", with a few commands themselves:
